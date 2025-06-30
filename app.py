@@ -5,12 +5,26 @@ import requests
 from readability import Document
 from bs4 import BeautifulSoup
 import pandas as pd
+import os
 
-# Load model & vectorizer
+# ----------------------------- #
+# 🔽 Auto-download model files from Google Drive
+def download_file(url, filepath):
+    if not os.path.exists(filepath):
+        response = requests.get(url)
+        with open(filepath, "wb") as f:
+            f.write(response.content)
+
+# 🔽 Download both model & vectorizer if missing
+download_file("https://drive.google.com/uc?id=1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
+download_file("https://drive.google.com/uc?id=123MrAKCUZXI5KmncT6MdJCMsoFl9JMzP", "model/vectorizer.pkl")
+
+# ----------------------------- #
+# 🔧 Load model & vectorizer
 model = pickle.load(open("model/model.pkl", "rb"))
 vectorizer = pickle.load(open("model/vectorizer.pkl", "rb"))
 
-# Page setup
+# 🖼 UI Setup
 st.set_page_config(page_title="Fake News Detector", page_icon="📰")
 logo = Image.open("assets/logo.png")
 st.image(logo, width=80)
@@ -18,11 +32,11 @@ st.image(logo, width=80)
 st.title("📰 Fake News Detector")
 st.write("Check if a news is Fake or Real using Machine Learning!")
 
-# Session state for history
+# 🧠 Store prediction history
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# Source credibility dictionary
+# 🌐 Source credibility scores
 credibility = {
     "bbc": 0.9,
     "ndtv": 0.85,
@@ -31,14 +45,14 @@ credibility = {
     "random": 0.2
 }
 
-# Choose Input Type
+# 🔘 Input method
 st.markdown("### 🧾 Choose Input Method")
 input_mode = st.radio("Select input type:", ["Paste News Text", "Paste URL"])
 
 news = ""
 source = ""
 
-# Text input
+# ✍️ News Text Input
 if input_mode == "Paste News Text":
     col1, col2 = st.columns([3, 1])
     with col1:
@@ -46,7 +60,7 @@ if input_mode == "Paste News Text":
     with col2:
         source = st.text_input("🌐 Source (optional)", placeholder="e.g., BBC, WhatsApp")
 
-# URL input
+# 🔗 News URL Input
 elif input_mode == "Paste URL":
     url = st.text_input("🔗 Paste News Article URL")
     if url:
@@ -62,7 +76,7 @@ elif input_mode == "Paste URL":
         except Exception as e:
             st.error(f"⚠️ Failed to extract article: {str(e)}")
 
-# Prediction
+# 🚦 Check button & Prediction
 if st.button("Check"):
     with st.spinner("Analyzing the news..."):
         if news.strip() == "":
@@ -74,16 +88,19 @@ if st.button("Check"):
             result = "REAL" if prediction == 1 else "FAKE"
             credibility_score = credibility.get(source.lower(), 0.5) if source else "N/A"
 
+            # Output
             if prediction == 0:
                 st.error("❌ This news is likely FAKE.")
-                fake_img = Image.open("assets/fake.png")
-                st.image(fake_img, width=300)
+                st.image("assets/fake.png", width=300)
             else:
                 st.success("✅ This news is likely REAL.")
-                real_img = Image.open("assets/real.png")
-                st.image(real_img, width=300)
+                st.image("assets/real.png", width=300)
 
-            # Save result to history
+            # Source credibility
+            if source:
+                st.info(f"🔍 Source Credibility Score: {credibility_score * 100:.0f}%")
+
+            # 📝 Save session history
             st.session_state.history.append({
                 "News": news[:100] + "..." if len(news) > 100 else news,
                 "Prediction": result,
@@ -91,18 +108,13 @@ if st.button("Check"):
                 "Credibility": f"{credibility_score * 100:.0f}%" if source else "N/A"
             })
 
-            # Show source credibility
-            if source:
-                st.info(f"🔍 Source Credibility Score: {credibility_score * 100:.0f}%")
-
-# Show session history
+# 📑 Show Session History + CSV download
 if st.session_state.history:
     st.markdown("---")
     st.subheader("🧾 Session History")
     df = pd.DataFrame(st.session_state.history)
     st.dataframe(df, use_container_width=True)
 
-    # CSV Download Button
     csv = df.to_csv(index=False).encode("utf-8")
     st.download_button(
         label="📥 Download Session History as CSV",
@@ -110,3 +122,4 @@ if st.session_state.history:
         file_name="news_history.csv",
         mime="text/csv"
     )
+
