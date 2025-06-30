@@ -1,9 +1,10 @@
 streamlit
-scikit-learn
 pandas
-nltk
+scikit-learn
+bs4
 lxml
 readability-lxml
-beautifulsoup4
 requests
 Pillow
+gdown
+
