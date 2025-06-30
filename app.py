@@ -10,10 +10,14 @@ import os
 # ----------------------------- #
 # 🔽 Auto-download model files from Google Drive
 def download_file(url, filepath):
+    # 🔽 Make sure folder exists
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
     if not os.path.exists(filepath):
         response = requests.get(url)
         with open(filepath, "wb") as f:
             f.write(response.content)
+
 
 # 🔽 Download both model & vectorizer if missing
 download_file("https://drive.google.com/uc?id=1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
