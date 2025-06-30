@@ -7,21 +7,16 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import os
 
-# ----------------------------- #
-# 🔽 Auto-download model files from Google Drive
-def download_file(url, filepath):
-    # 🔽 Make sure folder exists
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+import gdown
 
-    if not os.path.exists(filepath):
-        response = requests.get(url)
-        with open(filepath, "wb") as f:
-            f.write(response.content)
+def download_file_from_drive(file_id, output_path):
+    if not os.path.exists(output_path):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, output_path, quiet=False)
 
-
-# 🔽 Download both model & vectorizer if missing
-download_file("https://drive.google.com/uc?id=1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
-download_file("https://drive.google.com/uc?id=123MrAKCUZXI5KmncT6MdJCMsoFl9JMzP", "model/vectorizer.pkl")
+# Use file IDs only
+download_file_from_drive("1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
+download_file_from_drive("123MrAKCUZXI5KmncT6MdJCMsoFl9JMzP", "model/vectorizer.pkl")
 
 # ----------------------------- #
 # 🔧 Load model & vectorizer
