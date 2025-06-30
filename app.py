@@ -13,6 +13,7 @@ def download_file_from_drive(file_id, output_path):
     if not os.path.exists(output_path):
         url = f"https://drive.google.com/uc?id={file_id}"
         gdown.download(url, output_path, quiet=False)
+os.makedirs("model", exist_ok=True)
 
 # Use file IDs only
 download_file_from_drive("1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
