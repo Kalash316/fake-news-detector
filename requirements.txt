@@ -1,4 +1,9 @@
 streamlit
 scikit-learn
-nltk
 pandas
+nltk
+lxml
+readability-lxml
+beautifulsoup4
+requests
+Pillow
