@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import os
 import gdown
+from pathlib import Path
 
 # 🔽 Download model files from Google Drive
 def download_file_from_drive(file_id, output_path):
@@ -28,8 +29,14 @@ vectorizer = pickle.load(open("model/vectorizer.pkl", "rb"))
 
 # 🖼 UI Setup
 st.set_page_config(page_title="Fake News Detector", page_icon="📰")
-logo = Image.open("assets/logo.png")
-st.image(logo, width=80)
+
+# ✅ Safe image load
+logo_path = Path("assets/logo.png")
+if logo_path.exists():
+    logo = Image.open(logo_path)
+    st.image(logo, width=80)
+else:
+    st.warning("⚠️ Logo image not found. Place logo.png in assets/")
 
 st.title("📰 Fake News Detector")
 st.write("Check if a news is Fake or Real using Machine Learning!")
@@ -90,13 +97,17 @@ if st.button("Check"):
             result = "REAL" if prediction == 1 else "FAKE"
             credibility_score = credibility.get(source.lower(), 0.5) if source else "N/A"
 
-            # Output
+            # Output Result
             if prediction == 0:
                 st.error("❌ This news is likely FAKE.")
-                st.image("assets/fake.png", width=300)
+                fake_img_path = Path("assets/fake.png")
+                if fake_img_path.exists():
+                    st.image(str(fake_img_path), width=300)
             else:
                 st.success("✅ This news is likely REAL.")
-                st.image("assets/real.png", width=300)
+                real_img_path = Path("assets/real.png")
+                if real_img_path.exists():
+                    st.image(str(real_img_path), width=300)
 
             # Source credibility
             if source:
@@ -124,3 +135,4 @@ if st.session_state.history:
         file_name="news_history.csv",
         mime="text/csv"
     )
+
