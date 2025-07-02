@@ -6,7 +6,7 @@ from readability import Document
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
-
+https://drive.google.com/file/d/1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5/view?usp=sharing
 import gdown
 
 def download_file_from_drive(file_id, output_path):
