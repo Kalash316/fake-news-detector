@@ -6,16 +6,18 @@ from readability import Document
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
-https://drive.google.com/file/d/1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5/view?usp=sharing
 import gdown
 
+# 🔽 Download model files from Google Drive
 def download_file_from_drive(file_id, output_path):
     if not os.path.exists(output_path):
         url = f"https://drive.google.com/uc?id={file_id}"
         gdown.download(url, output_path, quiet=False)
+
+# Ensure model directory exists
 os.makedirs("model", exist_ok=True)
 
-# Use file IDs only
+# Download model and vectorizer
 download_file_from_drive("1DXoHmMfZb5DgJ1p8BRlCtCf0oLoSPDK5", "model/model.pkl")
 download_file_from_drive("123MrAKCUZXI5KmncT6MdJCMsoFl9JMzP", "model/vectorizer.pkl")
 
@@ -122,4 +124,3 @@ if st.session_state.history:
         file_name="news_history.csv",
         mime="text/csv"
     )
-
