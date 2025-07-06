@@ -35,8 +35,8 @@ A machine learning web application that classifies news articles as **Real** or 
 
 > Upload images in a `screenshots/` folder in your repo and replace the links below:
 
-![App Interface](screenshots/interface.png)  
-![Prediction Result](screenshots/result.png)
+![App Interface]((https://1drv.ms/i/c/3c3c25c5ee8a472e/ERHcm7qrCTFMlyKQXbLOHhEB080qaiu_NCKgITGrk48_vQ?e=s6NMqh)-)
+![Prediction Result](https://1drv.ms/i/c/3c3c25c5ee8a472e/EZPPzPapNnlAiw7BJWZHdWUBv9QOjTJfYwx1NioBdw3Smg?e=YaAU1F)
 
 ---
 
